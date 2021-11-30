@@ -6,14 +6,12 @@ const resolvers={
     Query:{
         me: async (parent, args, context)=>{
             if(context.user){
-            
-            console.log('user id', id)
-            const user = await User.findOne({_id:context.user._id})
-            console.log('user', user)
-            return user;
+            const userData = await User.findOne({_id:context.user._id}).select('-__v -password');
+            console.log('user', userData)
+            return userData;
         }
-        throw new AuthenticationError('You Need to be Logged in!')
-        }
+        throw new AuthenticationError('You Need to be Logged in!');
+        },
     },
     Mutation:{
         login: async (parent, {email, password})=>{
@@ -53,18 +51,19 @@ const resolvers={
             //dont need the password returned
             return { token, user:userWithOutPassword }
         },
-        // savedBooks: async (parent, args, context)=>{
-        //     if (context.user){
-        //         const updatedUser = await User.findOneAndUpdate(
-        //             {_id: context.user._id},
-        //             {$addToSet: {savedBooks: body}},
-        //             {new: true}
-        //         );
-        //         console.log("user" ,updatedUser)
-        //         return updatedUser;
-        //     }
-        //     throw new AuthenticationError('You Need to be Logged In!')
-        // },
+        saveBook: async (parent, { bookData }, context) => {
+            if (context.user) {
+              const updatedUser = await User.findByIdAndUpdate(
+                { _id: context.user._id },
+                { $push: { savedBooks: bookData } },
+                { new: true }
+              );
+            console.log("user:" ,updatedUser)
+              return updatedUser;
+            }
+      
+            throw new AuthenticationError('You need to be logged in!');
+          },
         removeBook: async (parent, { bookId }, context) => {
             if (context.user) {
               const updatedUser = await User.findOneAndUpdate(
