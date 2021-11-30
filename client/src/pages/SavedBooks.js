@@ -14,9 +14,10 @@ const SavedBooks = () => {
 
   const {loading, data }= useQuery(GET_ME)
   const [removeBook, {error}] = useMutation(REMOVE_BOOK);
+
 //using the query GET_ME to set userData on load instead of useEffect()
-  
   const userData = data?.me || {} ;
+  console.log(userData)
 
 
 //DELETED the useEffect()
