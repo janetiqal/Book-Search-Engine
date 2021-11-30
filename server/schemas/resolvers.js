@@ -17,9 +17,9 @@ const resolvers={
     },
     Mutation:{
         login: async (parent, {email, password})=>{
-            const user = await User.findOne(email)
+            const user = await User.findOne({email})
             if (!user){
-                throw new AuthenticationError('No user found with this email.')
+              throw new AuthenticationError('Incorrect credentials');
             }
             //check password match
             const correctPassword = await User.isCorrectPassword(password)
@@ -38,20 +38,24 @@ const resolvers={
             return {token, user: userWithOutPassword}
         },
         addUser: async( parent, args)=>{
-            console.log('adding user:', args)
-            const user = await User.create(args)
-            
-            //create userToken
-            const userDataforToken={
-                _id: user._id,
-                email: user.email,
-                username: user.username
-            }
-            const token = signToken(userDataforToken)
-            console.log(token)
-            //dont need the password returned
-            return { token, user:userDataforToken }
+            const user = await User.create(args);
+            const token = signToken(user);
+      
+            return { token, user };
         },
+        saveBook: async (parent, { bookData }, context) => {
+            if (context.user) {
+              const updatedUser = await User.findByIdAndUpdate(
+                { _id: context.user._id },
+                { $push: { savedBooks: bookData } },
+                { new: true }
+              );
+      
+              return updatedUser;
+            }
+      
+            throw new AuthenticationError('You need to be logged in!');
+          },
         // savedBooks: async (parent, args, context)=>{
         //     if (context.user){
         //         const updatedUser = await User.findOneAndUpdate(
@@ -68,7 +72,7 @@ const resolvers={
             if (context.user) {
               const updatedUser = await User.findOneAndUpdate(
                 { _id: context.user._id },
-                { $pull: { savedBooks: { bookId: bookId } } },
+                { $pull: { savedBooks: { bookId } } },
                 { new: true }
               );
               return updatedUser;
