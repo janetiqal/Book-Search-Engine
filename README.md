@@ -17,6 +17,7 @@ SO THAT I can keep a list of books to purchase
 - [Description](#description)
 - [Features](#features)
 - [Technologies](#technologies)
+- [Demo](#demo)
 - [Deployment](#deployment)
 - [Usage](#usage)
 - [Questions](#questions)
@@ -36,6 +37,9 @@ SO THAT I can keep a list of books to purchase
 - bcrypt.js to hash user passwords
 - JWT for Authentication
 - React.js
+
+## Demo
+![Demo](./client/public/Demo.gif)
 
 ## Deployment
 The app is deployed on heroku, [here](https://booksearch-ji.herokuapp.com/). 
