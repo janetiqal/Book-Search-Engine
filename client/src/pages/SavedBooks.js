@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 
 // import { getMe, deleteBook } from '../utils/API';
@@ -14,9 +14,10 @@ const SavedBooks = () => {
 
   const {loading, data }= useQuery(GET_ME)
   const [removeBook, {error}] = useMutation(REMOVE_BOOK);
-//using the query GET_ME to set userData on load instead of useEffect()
   
   const userData = data?.me || {} ;
+
+  console.log(userData)
 
 
 //DELETED the useEffect()
