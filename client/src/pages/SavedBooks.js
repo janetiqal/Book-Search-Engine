@@ -16,12 +16,12 @@ const SavedBooks = () => {
       try {
         const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-  const {loading, data }= useQuery(GET_ME)
-  const [removeBook, {error}] = useMutation(REMOVE_BOOK);
+  // const {loading, data }= useQuery(GET_ME)
+  // const [removeBook, {error}] = useMutation(REMOVE_BOOK);
 
 //using the query GET_ME to set userData on load instead of useEffect()
-  const userData = data?.me || {} ;
-  console.log(userData)
+  // const userData = data?.me || {} ;
+  // console.log(userData)
         if (!token) {
           return false;
         }

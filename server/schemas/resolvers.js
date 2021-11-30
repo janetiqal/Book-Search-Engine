@@ -17,12 +17,12 @@ const resolvers={
     },
     Mutation:{
         login: async (parent, {email, password})=>{
-            const user = await User.findOne(email)
+            const user = await User.findOne({email})
             if (!user){
                 throw new AuthenticationError('No user found with this email.')
             }
-            //check password match
-            const correctPassword = await User.isCorrectPassword(password)
+            //check password match on this specific user
+            const correctPassword = await user.isCorrectPassword(password)
             if (!correctPassword) {
                 throw new AuthenticationError('Incorrect credentials');
               }
@@ -34,6 +34,7 @@ const resolvers={
             }
             console.log('user w out password:', userWithOutPassword)
             const token = signToken(userWithOutPassword)
+            // console.log(token)
 
             return {token, user: userWithOutPassword}
         },
@@ -41,16 +42,16 @@ const resolvers={
             console.log('adding user:', args)
             const user = await User.create(args)
             
-            //create userToken
-            const userDataforToken={
-                _id: user._id,
-                email: user.email,
-                username: user.username
-            }
-            const token = signToken(userDataforToken)
+           //create token w out password
+           const userWithOutPassword = {
+            email: user.email,
+            _id: user._id,
+            username: user.username
+        }
+            const token = signToken(userWithOutPassword)
             console.log(token)
             //dont need the password returned
-            return { token, user:userDataforToken }
+            return { token, user:userWithOutPassword }
         },
         // savedBooks: async (parent, args, context)=>{
         //     if (context.user){
